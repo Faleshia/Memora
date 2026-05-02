@@ -37,7 +37,8 @@ class User(AbstractUser):
 
 
 class Note(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=255)
     content = models.TextField()
     color = models.CharField(max_length=20, default="purple")
@@ -47,7 +48,8 @@ class Note(models.Model):
 
 
 class Event(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    # user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=255)
     date = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
