@@ -59,15 +59,18 @@ class LoginView(APIView):
 
 class NoteListCreateView(generics.ListCreateAPIView):
     serializer_class = NoteSerializer
-    permission_classes = [permissions.AllowAny]    #IsAuthenticated{allowany}
-
-    # def get_queryset(self):
-    #     return Note.objects.filter(user=self.request.user)
+    permission_classes = [permissions.IsAuthenticated]    #IsAuthenticated{allowany}
 
     def get_queryset(self):
-      if self.request.user.is_authenticated:
         return Note.objects.filter(user=self.request.user)
-      return Note.objects.none()
+
+    # def get_queryset(self):
+    #   if self.request.user.is_authenticated:
+    #     return Note.objects.filter(user=self.request.user)
+    #   return Note.objects.none()
+
+    # def get_queryset(self):
+    #     return Note.objects.all()
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -75,17 +78,17 @@ class NoteListCreateView(generics.ListCreateAPIView):
 
 class NoteDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = NoteSerializer
-    permission_classes = [permissions.AllowAny]     #IsAuthenticated{allowany}
+    permission_classes = [permissions.IsAuthenticated]     #IsAuthenticated{allowany}
 
-# def get_queryset(self):
-#     return Note.objects.filter(user=self.request.user)
+    def get_queryset(self):
+        return Note.objects.filter(user=self.request.user)
 
-    def get_queryset(self):   
-        return Note.objects.all()
+    # def get_queryset(self):   
+    #     return Note.objects.all()
 
 
 class NoteLockView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.IsAuthenticated]
 
     def patch(self, request, pk):
         try:
@@ -104,27 +107,34 @@ class NoteLockView(APIView):
 
 class EventListCreateView(generics.ListCreateAPIView):
     serializer_class = EventSerializer
-    permission_classes = [permissions.AllowAny]   #IsAuthenticated{allowany}
+    permission_classes = [permissions.IsAuthenticated]   #IsAuthenticated{allowany}
 
 
 
-# def get_queryset(self):
-#         return Event.objects.filter(user=self.request.user)
+    def get_queryset(self):
+        return Event.objects.filter(user=self.request.user)
 
 
     # def get_queryset(self):
     #     return Event.objects.all()
 
 
-    def get_queryset(self):
-     if self.request.user.is_authenticated:
-        return Event.objects.filter(user=self.request.user)
-     return Event.objects.none()
+# def get_queryset(self):
+#       if self.request.user.is_authenticated:
+#         return Event.objects.filter(user=self.request.user)
+#       return Event.objects.none()
 
-
-# def perform_create(self, serializer):
-#         serializer.save(user=self.request.user)
 
     def perform_create(self, serializer):
-      if self.request.user.is_authenticated:
         serializer.save(user=self.request.user)
+
+    # def perform_create(self, serializer):
+    #   if self.request.user.is_authenticated:
+    #     serializer.save(user=self.request.user)
+
+class EventDetailView(generics.RetrieveDestroyAPIView):
+    serializer_class = EventSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Event.objects.filter(user=self.request.user)

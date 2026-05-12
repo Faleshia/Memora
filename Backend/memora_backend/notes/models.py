@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 
+
+# ─── Custom User Manager ─────────────────────────────────────────────
 class UserManager(BaseUserManager):
     def create_user(self, email, name, password=None, **extra_fields):
         if not email:
@@ -19,6 +21,7 @@ class UserManager(BaseUserManager):
         return self.create_user(email, name, password, **extra_fields)
 
 
+# ─── Custom User Model ───────────────────────────────────────────────
 class User(AbstractUser):
     username = None
     email = models.EmailField(unique=True)
@@ -35,21 +38,44 @@ class User(AbstractUser):
         return self.email
 
 
-
+# ─── Note Model ──────────────────────────────────────────────────────
 class Note(models.Model):
-    # user = models.ForeignKey(User, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    title = models.CharField(max_length=255)
-    content = models.TextField()
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="notes"
+    )
+    title = models.CharField(max_length=255, default="Untitled")  # prevents migration issues
+    content = models.TextField(default="")
     color = models.CharField(max_length=20, default="purple")
     is_locked = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.title
 
+
+# ─── Event Model ─────────────────────────────────────────────────────
 class Event(models.Model):
-    # user = models.ForeignKey(User, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    title = models.CharField(max_length=255)
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="events"
+    )
+    title = models.CharField(max_length=255, default="Event")
     date = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+
+
+
+
+
+
+
+
+
